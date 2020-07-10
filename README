@@ -4,3 +4,10 @@ Username : JohnDoerw
 Password : thunderstar1993
 Just download the exectuable a.exe and the user_info.txt and flight_info.txt
 to run the program.
+
+Functionalities/Documentation still being added. 
+This is a work in progress.
+Future additions :
+- GUI
+- Access to Database servers to save data
+- Creation of new users, airlines, flights.
