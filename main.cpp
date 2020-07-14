@@ -84,6 +84,7 @@ int main(void) {
 									displayAirlineHeader();
 									break;
 								case 3:
+									createAirline(airlines);
 									pressEnter();
 									displayAirlineHeader();
 									break;
@@ -147,6 +148,7 @@ int main(void) {
 									displayAirlineHeader();
 									break;
 								case 3:
+									createAirline(airlines);
 									pressEnter();
 									displayAirlineHeader();
 									break;
@@ -430,6 +432,23 @@ void selectAirline(vector <Airline> & airlines) {
 	}
 }
 
+void createAirline(vector <Airline> & airlines) {
+	int ID;
+	int successAirlineName;
+	char airlineName[21];
+	Airline createdAirline;
+	do {
+		ID = readAirlineID(airlines);
+	} while(ID == -1);
+	do {
+		successAirlineName = readAirlineName(airlineName, 21);
+	} while(successAirlineName == 0);
+	createdAirline.setID(ID);
+	createdAirline.setAirlineName(airlineName);
+	airlines.push_back(createdAirline);
+	cout << "You have successfully created an airline with ID " << ID << " and airline name : " << airlineName << " .\n";
+}
+	
 void deleteAirline(vector <Airline> & airlines) {
 	int ID;
 	int sizeBeforeDelete = static_cast<int>(airlines.size());
@@ -841,7 +860,7 @@ void saveUsers(vector <User> & userDatabase) {
 		cout << "Do you want to save the user data in the \"user_info.txt\"? Please enter <Y or N> : ";
 		choice = cin.get();
 		if(cin.fail()) {
-			cout << "\nThere was an error opening the file. Please try again.\n";
+			cout << "\nThere was an error while reading your choice. Please try again.\n";
 			cin.clear();
 			cleanStandardInputStream();
 		} else {

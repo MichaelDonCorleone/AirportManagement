@@ -4,6 +4,63 @@
 	Created By   : Apostolos Scondrianis
 	Submitted On : Monday 15th, June 2020
 ************************************************/
+int readAirlineID(vector <Airline> & airlines) {
+	int ID;
+	cout << "Please enter the Airline ID : ";
+	cin >> ID;
+	if(cin.fail()) {
+		cout << "\nYou have given an invalid ID. Make sure your airline ID is an integer number.\n";
+		cin.clear();
+		cleanStandardInputStream();
+		return -1;
+	} else {
+		if(ID >= 0 && ID <= 10000) {
+			for(int i = 0; i < static_cast<int>(airlines.size()); i++) {
+				if(ID == airlines[i].getID()) {
+					cout << "You have given an ID that already exists. Please use a different ID.\n";
+					return -1;
+				}
+			}
+			cin.ignore();
+			return ID;
+		} else {
+			cout << "Airline ID must be a number between 0 and 10000. Please try again.\n";
+			return -1;
+		}
+	}
+}
+
+int readAirlineName(char * airlineName, int n) {
+	char *p = airlineName;
+	cout << "Please give the airline name : ";
+	cin.getline(airlineName, n, '\n');
+	if(cin.fail()) {
+		cout << "The airline name should be less than or equal to " << n-1 << " characters. Please try again.\n";
+		cin.clear();
+		cleanStandardInputStream();
+		return 0;
+	} else {
+		if((*p) == ' ') {
+			cout << "The airline name cannot start with a space. Please try again.\n";
+			return 0;
+		} else {
+			if(strlen(airlineName) >= 10) {
+				while(*p != '\0') {
+					if(!(isalpha(*p) || *p == ' ')) {
+						cout << "The airline name can only include spaces and alphabetic characters. Please try again.\n";
+						return 0;
+					}
+					p++;
+				}
+				return 1;
+			} else {
+				cout << "Airline name must be at least 10 characters. Please try again.\n";
+				return 0;
+			}
+		}
+	}
+}
+
 int readFlightName(char * flightName, int n) {
 	char * p = flightName;
 	cout << "Please enter the flight name : ";

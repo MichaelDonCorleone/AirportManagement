@@ -69,6 +69,12 @@ int readSeats();
 
 int readFlightID(vector <Flight> & flights);
 
+void createAirline(vector <Airline> & airlines);
+
+int readAirlineID(vector <Airline> & airlines);
+
+int readAirlineName(char * airlineName, int n);
+
 int flightMenu();
 /*
     REQUIRES : The user must input a choice between 1 and 
