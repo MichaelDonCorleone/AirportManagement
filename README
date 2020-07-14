@@ -16,3 +16,5 @@ Future additions :
 Recent functionality addition :
 - Creation of flights 13/07/2020
 - Creation airlines 14/07/2020
+- Save airlines in file 14/07/2020
+- Load airlines from file on startup 14/07/2020
