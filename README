@@ -10,4 +10,9 @@ This is a work in progress.
 Future additions :
 - GUI
 - Access to Database servers to save data
-- Creation of new users, airlines, flights.
+- Creation of users.
+- Creation airlines.
+- Save of all data in file.
+
+Recent functionality addition :
+Creation of flights
