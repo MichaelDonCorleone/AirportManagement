@@ -23,15 +23,16 @@ int main(void) {
 	userDatabase.push_back(test2);
 	int airlineFlag;
 	vector <Airline> airlines;
-	airlines.resize(4);
-	airlines[0].setID(0);
+	readAirlinesFromFile(airlines, "airline_info.txt");
+	//airlines.resize(4);
+/*	airlines[0].setID(0);
 	airlines[1].setID(1);
 	airlines[2].setID(2);
 	airlines[3].setID(3);
 	airlines[0].setAirlineName("West Jest");
 	airlines[1].setAirlineName("British Airways");
 	airlines[2].setAirlineName("Air Canada");
-	airlines[3].setAirlineName("American Airways");
+	airlines[3].setAirlineName("American Airways");*/
 	Flight f;
 	f = populate_flight_from_file("flight_info.txt");
 	airlines[0].addFlight(f);
@@ -94,6 +95,11 @@ int main(void) {
 									displayAirlineHeader();
 									break;
 								case 5:
+									saveAirlines(airlines);
+									pressEnter();
+									displayAirlineHeader();
+									break;
+								case 6:
 									cout << "You have exited the Airline menu.\n";
 									airlineFlag = 0;
 									break;
@@ -158,6 +164,11 @@ int main(void) {
 									displayAirlineHeader();
 									break;
 								case 5:
+									saveAirlines(airlines);
+									pressEnter();
+									displayAirlineHeader();
+									break;
+								case 6:
 									cout << "You have exited the Airline menu.\n\n";
 									airlineFlag = 0;
 									break;
@@ -313,8 +324,9 @@ void displayAirlineHeader() {
 	cout << "2. Select Airline to modify.\n";
 	cout << "3. Add Airline.\n";
 	cout << "4. Delete Airline.\n";
-	cout << "5. Exit Airline menu.\n";
-	cout << "Enter your choice: (1, 2, 3, 4 or 5) : ";
+	cout << "5. Save Airline data.\n";
+	cout << "6. Exit Airline menu.\n";
+	cout << "Enter your choice: (1, 2, 3, 4, 5 or 6) : ";
 }
 
 void displayFlightHeader() {
@@ -383,7 +395,7 @@ int airlineMenu() {
 		if(choice == '\n') {
 			cout << "You have given an invalid input.\n\n";
 		} else {
-			if(static_cast<int>(choice) - 48 <= 5 && static_cast<int>(choice) - 48 >=1) {
+			if(static_cast<int>(choice) - 48 <= 6 && static_cast<int>(choice) - 48 >=1) {
 				cleanStandardInputStream();
 				return static_cast<int>(choice) - 48;
 			} else {
@@ -808,6 +820,47 @@ void removePassenger(Flight & source) {
 	}
 	cleanStandardInputStream();
 }
+
+void saveAirlines(vector <Airline> & airlines) {
+	char choice;
+	ofstream outputStream;
+	while(1) {
+		cout << "Would you like to save the airline data in the \"airline_info.txt\"? Please answer <Y or N> :";
+		choice = cin.get();
+		if(cin.fail()) {
+			cout << "\nThere was an error while trying to read your selection. Please try again.\n";
+			cin.clear();
+			cleanStandardInputStream();
+		} else {
+			if(choice == 'Y') {
+				outputStream.open("airline_info.txt");
+				if(outputStream.fail()) {
+					cout << "There was an error while trying to open the file. Operation was cancelled.\n";
+					outputStream.close();
+					break;
+				} else {
+					outputStream << setiosflags(ios::left);
+					for(int i = 0; i < static_cast<int>(airlines.size()); i++) {
+						outputStream << setw(6) << airlines[i].getID() << setw(20) << airlines[i].getAirlineName() << "\n";
+					}
+					cout << "\nAll the airline data was saved in the airline_info.txt\n";
+					outputStream << setw(6) << "-1";
+					cin.ignore();
+					outputStream.close();
+					break;
+				}
+			}else if(choice == 'N') {
+				cout << "\nYou chose not to save any data.\n";
+				cin.ignore();
+				break;
+			} else {
+				cout << "\nYour input was not 'Y' or 'N'.Please try again.\n";
+				cin.ignore();
+			}
+		}
+	}
+}
+
 void saveInformation(Flight & f){
 	char choice;
 	ofstream outputStream;
@@ -892,6 +945,76 @@ void saveUsers(vector <User> & userDatabase) {
 			}
 		}
 	}
+}
+
+void readAirlinesFromFile(vector <Airline> & airlines, string filename) {
+	int ID;
+	int characterCounter = 1;
+	char airlineName[21];
+	Airline createdAirline;
+	char *p;
+	ifstream inputStream(filename);
+	if(inputStream.fail()) {
+		cout << "There was an error opening the file... Program will now terminate.\n";
+		inputStream.close();
+		exit(1);
+	}
+	while(1) {
+		inputStream >> ID;
+		if(inputStream.eof()) {
+			break;
+		}else if(inputStream.fail()) {
+			cout << "Something went wrong while reading Airline ID.\n";
+			exit(1);
+		}
+		if(ID >= 0 && ID <= 10) {
+			inputStream.ignore();
+			inputStream.ignore();
+			inputStream.ignore();
+			inputStream.ignore();
+			inputStream.ignore();
+		} else if(ID > 10 && ID <= 100) {
+			inputStream.ignore();
+			inputStream.ignore();
+			inputStream.ignore();
+		} else if(ID > 100 && ID <= 1000) {
+			inputStream.ignore();
+			inputStream.ignore();
+		} else {
+			inputStream.ignore();
+		}
+		inputStream.get(airlineName, 21);
+		cout << airlineName << "\n";
+		if(inputStream.eof()) {
+			break;
+		} else if(inputStream.fail()) {
+			cout << "Something went wrong while reading the airline name.\n";
+			exit(1);
+		}
+		p = airlineName;
+		while(*p != '\0' && characterCounter != 20) {
+			if(*p == ' ' && *(p+1) == ' ') {
+				*p = '\0';
+				break;
+			}
+			p++;
+			characterCounter++;
+		}
+		if(characterCounter == 20) {
+			if(airlineName[19] == ' ') {
+				airlineName[19] = '\0';
+			} else {
+				airlineName[20] = '\0';
+			}
+		}
+		characterCounter = 1;
+		createdAirline.setID(ID);
+		createdAirline.setAirlineName(airlineName);
+		airlines.push_back(createdAirline);
+		cout << "test\n";
+		inputStream.ignore();
+	}
+	inputStream.close();
 }
 
 Flight populate_flight_from_file(string filename) {
