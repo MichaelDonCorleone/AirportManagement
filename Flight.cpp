@@ -94,7 +94,7 @@ void Flight::removePassenger(const int ID) {
 		}
 	}
 }
-void Flight::show_seat_map() {
+void Flight::show_seat_map() const {
 	if(rowsM != 0 && seatsM != 0) {
 		vector < vector <int> > m (rowsM, vector<int> (seatsM));
 		for(int i = 0; i < static_cast<int>(passengersM.size()); i++) {

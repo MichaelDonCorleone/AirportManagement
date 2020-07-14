@@ -51,7 +51,7 @@ class Flight {
 		   PROMISES : If the passengerID is a valid ID and exists in the passengerM vector,
 		              it removed the Pasenger object with that ID from the flight object.
 	    */
-		void show_seat_map();
+		void show_seat_map() const;
 		/*
 		    REQUIRES : Rows and Seats of the flight have been defined and both are greater than
 			           0.

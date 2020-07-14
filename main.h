@@ -61,7 +61,13 @@ void selectFlight(Airline & airline);
 
 void createFlight(Airline & airline);
 
-void modifyFlight(Airline & airline, int position);
+void modifyFlight(Flight & flight);
+
+int readRows();
+
+int readSeats();
+
+int readFlightID(vector <Flight> & flights);
 
 int flightMenu();
 /*
@@ -71,7 +77,7 @@ int flightMenu();
 	  		   and lesser or equal to 6. Appropriate error messages
 			   are printed to the screen.
 */
-void displayPassengers(const Flight &source);
+void displayPassengers(const Flight & source);
 /* 
     REQUIRES : The flight must have passengers to be able to display passengers.
     PROMISES : The information of the passengers that will be boarding this flight

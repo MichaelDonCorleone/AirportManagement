@@ -5,38 +5,6 @@
 	Submitted On : Monday 15th, June 2020
 ************************************************/
 
-int readFlightID(Airline & airline) {
-	int ID;
-	cout << "Please enter the flight ID : ";
-	cin >> ID;
-	if(cin.fail()) {
-		cout << "\nYou have given an invalid input. Make sure your flight ID is a number that has 5 digits.\n";
-		cin.clear();
-		cleanStandardInputStream();
-		return 0;
-	} else {
-		if(ID >= 0 && ID <= 1000) {
-			for(int i = 0; i < static_cast<int>(airline.getFlights().size(); i++) {
-				if(airline.getFlights()[i].getID() == ID) {
-					cout << "\n You are trying to use an ID that has already been assigned.\nPlease enter a different ID.\n";
-					return 0;
-				}
-			}
-			cin.ignore();
-			return ID;
-		} else {
-			cout << "\nYou have given an invalid input. Make sure your ID is a number between 0 and 1000.\n";
-			return 0;
-		}
-	}
-}
-
-int readRows(Airline & airline) {
-}
-
-int readSeats(Airline & airline) {
-}
-
 int readPassengerID(Flight &source) {
 	int ID;
 	cout << "Please enter the passenger ID : ";

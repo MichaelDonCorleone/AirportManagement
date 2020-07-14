@@ -9,6 +9,7 @@
 #include "User.cpp"
 #include "main.h"
 #include "readPassengerFromKeyboard.cpp"
+#include "readFlightFromKeyboard.cpp"
 
 int main(void) {
 	int choice;
@@ -378,7 +379,7 @@ int airlineMenu() {
 	while(1) {
 		choice = cin.get();
 		if(choice == '\n') {
-			cout << "You have given an invalid input.";
+			cout << "You have given an invalid input.\n\n";
 		} else {
 			if(static_cast<int>(choice) - 48 <= 5 && static_cast<int>(choice) - 48 >=1) {
 				cleanStandardInputStream();
@@ -605,8 +606,35 @@ void displayFlights(Airline & airline) {
 		}
 	}
 }
+
+void createFlight(Airline & airline) {
+	Flight createdFlight;
+	int rows;
+	int seats;
+	int ID;
+	int successName;
+	char flightName[7];
+	do {
+		ID = readFlightID(airline.getFlights());
+	} while(ID == -1);
+	do {
+		successName = readFlightName(flightName, 7);
+	} while(successName == 0);
+	do {
+		rows = readRows();
+	} while(rows == 0);
+	do {
+		seats = readSeats();
+	} while(seats == 0);
+	createdFlight.setID(ID);
+	createdFlight.setRows(rows);
+	createdFlight.setSeats(seats);
+	createdFlight.setFlightName(flightName);
+	airline.getFlights().push_back(createdFlight);
+}
+
 void selectFlight(Airline & airline) {
-	const vector <Flight> & flights = airline.getFlights();
+	vector <Flight> & flights = airline.getFlights();
 	int ID;
 	if(static_cast<int>(flights.size()) == 0) {
 		cout << "There are no flights registered in the system for this airline.\n\n";
@@ -625,7 +653,7 @@ void selectFlight(Airline & airline) {
 						if(flights[i].getID() == ID) {
 							cout << "You chose to modify " << flights[i].getFlightName() <<".\n\n";
 							cleanStandardInputStream();
-							modifyFlight(airline, i);
+							modifyFlight(flights[i]);
 							break;
 						}
 					}
@@ -643,8 +671,7 @@ void selectFlight(Airline & airline) {
 	}
 }
 
-void modifyFlight(Airline & airline, int position) {
-	Flight flight = airline.getFlights()[position];
+void modifyFlight(Flight & flight) {
 	int choice;
 	displayModifyFlightHeader();
 	int flightFlag = 1;
