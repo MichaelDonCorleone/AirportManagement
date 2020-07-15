@@ -24,18 +24,8 @@ int main(void) {
 	int airlineFlag;
 	vector <Airline> airlines;
 	readAirlinesFromFile(airlines, "airline_info.txt");
-	//airlines.resize(4);
-/*	airlines[0].setID(0);
-	airlines[1].setID(1);
-	airlines[2].setID(2);
-	airlines[3].setID(3);
-	airlines[0].setAirlineName("West Jest");
-	airlines[1].setAirlineName("British Airways");
-	airlines[2].setAirlineName("Air Canada");
-	airlines[3].setAirlineName("American Airways");*/
-	Flight f;
-	f = populate_flight_from_file("flight_info.txt");
-	airlines[0].addFlight(f);
+	readFlightsFromFile(airlines, "flights_info.txt");
+	readPassengersFromFile(airlines, "passengers_info.txt");
 	
 	cout << "Version 1.0" << endl;
 	cout << "Term Project - Flight Management Program in C++" << endl;
@@ -628,12 +618,12 @@ void displayFlights(Airline & airline) {
 	if(airline.getFlights().size() == 0) {
 		cout << "\nThere are no flights to display\n";
 	} else {
-		cout << "\n-------------------------------\n";
-		cout << setw(15) << setiosflags(ios::left) << " Airline ID " << setw(5) << "ID" << setw(20) << "Flight Name" << endl;
-		cout << "-------------------------------\n";
+		cout << "\n-------------------------------------------------------\n";
+		cout << setw(15) << setiosflags(ios::left) << "Airline ID " << setw(5) << "ID" << setw(20) << "Flight Name" << setw(10) << "Rows" << setw(10) << "Seats" << endl;
+		cout << "-------------------------------------------------------\n";
 		for(int i = 0; i < static_cast<int>(flights.size()); i++) {
-			cout << setw(15) << flights[i].getAirlineID() << setw(5) << flights[i].getID() << setw(20) << flights[i].getFlightName() << endl;
-			cout << "-------------------------------\n";
+			cout << setw(15) << flights[i].getAirlineID() << setw(5) << flights[i].getID() << setw(20) << flights[i].getFlightName() << setw(10)<< flights[i].getRows() << setw(10) << flights[i].getSeats() << endl;
+			cout << "-------------------------------------------------------\n";
 		}
 	}
 }
@@ -824,6 +814,7 @@ void removePassenger(Flight & source) {
 void saveAirlines(vector <Airline> & airlines) {
 	char choice;
 	ofstream outputStream;
+	ofstream flightStream;
 	while(1) {
 		cout << "Would you like to save the airline data in the \"airline_info.txt\"? Please answer <Y or N> :";
 		choice = cin.get();
@@ -834,14 +825,19 @@ void saveAirlines(vector <Airline> & airlines) {
 		} else {
 			if(choice == 'Y') {
 				outputStream.open("airline_info.txt");
-				if(outputStream.fail()) {
+				flightStream.open("flights_info.txt");
+				if(outputStream.fail() || flightStream.fail()) {
 					cout << "There was an error while trying to open the file. Operation was cancelled.\n";
 					outputStream.close();
 					break;
 				} else {
 					outputStream << setiosflags(ios::left);
+					flightStream << setiosflags(ios::left);
 					for(int i = 0; i < static_cast<int>(airlines.size()); i++) {
 						outputStream << setw(6) << airlines[i].getID() << setw(20) << airlines[i].getAirlineName() << "\n";
+						for(int j = 0; j < static_cast<int>(airlines[i].getFlights().size()); j++) {
+							flightStream << setw(6) << airlines[i].getID() << setw(4) << airlines[i].getFlights()[j].getID() << setw(9) << airlines[i].getFlights()[j].getFlightName() << setw(6) << airlines[i].getFlights()[j].getRows() << airlines[i].getFlights()[j].getSeats() << "\n";
+						}
 					}
 					cout << "\nAll the airline data was saved in the airline_info.txt\n";
 					outputStream << setw(6) << "-1";
@@ -967,17 +963,17 @@ void readAirlinesFromFile(vector <Airline> & airlines, string filename) {
 			cout << "Something went wrong while reading Airline ID.\n";
 			exit(1);
 		}
-		if(ID >= 0 && ID <= 10) {
+		if(ID >= 0 && ID < 10) {
 			inputStream.ignore();
 			inputStream.ignore();
 			inputStream.ignore();
 			inputStream.ignore();
 			inputStream.ignore();
-		} else if(ID > 10 && ID <= 100) {
+		} else if(ID >= 10 && ID < 100) {
 			inputStream.ignore();
 			inputStream.ignore();
 			inputStream.ignore();
-		} else if(ID > 100 && ID <= 1000) {
+		} else if(ID >= 100 && ID < 10000) {
 			inputStream.ignore();
 			inputStream.ignore();
 		} else {
@@ -1017,235 +1013,330 @@ void readAirlinesFromFile(vector <Airline> & airlines, string filename) {
 	inputStream.close();
 }
 
-Flight populate_flight_from_file(string filename) {
-	Flight f;
-	Passenger createdPassenger;
-	char flightName[10];
+void readFlightsFromFile(vector <Airline> & airlines, string filename) {
+	Flight createdFlight;
+	int flightID;
+	int airlineID;
+	char flightName[7];
+	char * p;
 	int rows;
 	int seats;
+	ifstream readFlightStream(filename);
+	if(readFlightStream.fail()) {
+		cout << "Something went wrong while opening the flight file... Program will now terminate...\n";
+		readFlightStream.close();
+		exit(1);
+	} else {
+		while(1) {
+			readFlightStream >> airlineID;
+			if(readFlightStream.eof()) {
+				break;
+			} else if(readFlightStream.fail()){
+				cout << "Something went wrong while reading the airline ID.\n";
+				exit(1);
+			}
+			if(airlineID >= 0 && airlineID < 10) {
+				readFlightStream.ignore();
+				readFlightStream.ignore();
+				readFlightStream.ignore();
+				readFlightStream.ignore();
+				readFlightStream.ignore();
+			} else if(airlineID >= 10 && airlineID < 100) {
+				readFlightStream.ignore();
+				readFlightStream.ignore();
+				readFlightStream.ignore();
+			} else if(airlineID >= 100 && airlineID < 10000) {
+				readFlightStream.ignore();
+				readFlightStream.ignore();
+			} else {
+				readFlightStream.ignore();
+			}
+			readFlightStream >> flightID;
+			if(readFlightStream.eof()) {
+				break;
+			} else if(readFlightStream.fail()) {
+				cout << "There was an error while reading the flight ID.\n";
+				exit(1);
+			}
+			if(flightID >= 0 && flightID < 10) {
+				readFlightStream.ignore();
+				readFlightStream.ignore();
+				readFlightStream.ignore();
+			} else if(flightID >= 10 && flightID <100) {
+				readFlightStream.ignore();
+				readFlightStream.ignore();
+			} else {
+				readFlightStream.ignore();
+			}
+			readFlightStream.get(flightName, 7);
+			cout << flightName << endl;
+			if(readFlightStream.eof()) {
+				break;
+			} else if(readFlightStream.fail()) {
+				cout << "There was an error while reading the flight name.\n";
+				exit(1);
+			}
+			p = flightName;
+			while(*p != '\0') {
+				if(*p == ' ') {
+					*p = '\0';
+					break;
+				}
+				p++;
+			}
+			readFlightStream >> rows >> seats;
+			if(readFlightStream.eof()) {
+				break;
+			} else if(readFlightStream.fail()) {
+				cout << "There was an error while reading seats or rows.\n";
+				exit(1);
+			}
+			readFlightStream.ignore();
+			for(int i = 0; i < static_cast<int>(airlines.size()); i++) {
+				if(airlines[i].getID() == airlineID) {
+					createdFlight.setID(flightID);
+					createdFlight.setAirlineID(airlineID);
+					createdFlight.setFlightName(flightName);
+					createdFlight.setRows(rows);
+					createdFlight.setSeats(seats);
+					airlines[i].getFlights().push_back(createdFlight);
+					break;
+				}
+			}
+		}
+		readFlightStream.close();
+	}
+}
+
+void readPassengersFromFile(vector <Airline> & airlines, string filename) {
+	Passenger createdPassenger;
+	int airlineID;
+	int flightID;
+	int passengerID;
+	int passengerRow;
 	char firstName[21];
 	char lastName[21];
-	char seatCharacters[5];
-	int passengerRow;
-	char passengerSeat;
 	char phoneNumber[21];
-	int passengerID;
-	ifstream inputStream(filename);
-	char * p;
-	int dashCounter;
+	char seatCharacters[5];
+	char passengerSeat;
+	char *p;
 	int spaceCounter;
+	int dashCounter;
 	int validName;
 	int validPhoneNumber;
-	if(inputStream.fail()) {
+	ifstream readPassengerStream("passengers_info.txt");
+	if(readPassengerStream.fail()) {
 		cout << "There was an error opening the file... Program will now terminate.\n";
+		readPassengerStream.close();
 		exit(1);
-	}
-	while(1) {
-		inputStream.get(flightName, 10);
-		if(inputStream.eof())
-			break;
-		else if(inputStream.fail()) {
-			cout << "Something went wrong while reading the flight name.\n";
-			exit(1);
-		}
-		inputStream >> rows >> seats;
-		if(inputStream.eof())
-			break;
-		else if(inputStream.fail()) {
-			cout << "Something went wrong while reading flight seats and rows.\n";
-		}
-		p = flightName;
-		while(*p != '\0') {
-			if(*p == ' ') {
-				*p = '\0';
-				break;
-			}
-			p++;
-		}
-		f.setFlightName(flightName);
-		f.setRows(rows);
-		f.setSeats(seats);
-		f.setAirlineID(0);
+	} else {
 		while(1) {
-			inputStream.ignore();
-			inputStream.get(firstName, 21);
-			if(inputStream.eof())
-				break;
-			else if(inputStream.fail()) {
-				cout << "Something went wrong while reading the passenger first name. Program will terminate.\n";
-				cout << firstName << endl;
-				exit(1);
-				
-			} else {
-				if(static_cast<int>(strlen(firstName)) > 0) {
-					int k;
-					dashCounter = 0;
-					spaceCounter = 0;
-					validName = 1;
-					for(k = 0; k < static_cast<int>(strlen(firstName)); k++) {
-						if(!(isalpha(firstName[k]))) {
-							if(!(firstName[k] == '-')) {
-								if(k > 0 && spaceCounter == 0 && firstName[k] == ' ') {
-									spaceCounter++;
+			while(1) {
+				readPassengerStream >> airlineID >> flightID;
+				if(readPassengerStream.eof()) {
+					break;
+				}else if(readPassengerStream.fail()) {
+					cout << "There was an error while reading the airlineID and flight ID.\n";
+					exit(1);
+				}
+				if(flightID >= 0 && flightID < 10) {
+					readPassengerStream.ignore();
+					readPassengerStream.ignore();
+					readPassengerStream.ignore();
+				} else if(flightID >= 10 && flightID < 100) {
+					readPassengerStream.ignore();
+					readPassengerStream.ignore();
+				} else {
+					readPassengerStream.ignore();
+				}
+				readPassengerStream.get(firstName, 21);
+				if(readPassengerStream.eof())
+					break;
+				else if(readPassengerStream.fail()) {
+					cout << "Something went wrong while reading the passenger first name. Program will terminate.\n";
+					cout << firstName << endl;
+					exit(1);
+					
+				} else {
+					if(static_cast<int>(strlen(firstName)) > 0) {
+						int k;
+						dashCounter = 0;
+						spaceCounter = 0;
+						validName = 1;
+						for(k = 0; k < static_cast<int>(strlen(firstName)); k++) {
+							if(!(isalpha(firstName[k]))) {
+								if(!(firstName[k] == '-')) {
+									if(k > 0 && spaceCounter == 0 && firstName[k] == ' ') {
+										spaceCounter++;
+									} else {
+										if(spaceCounter == 1 && firstName[k] == ' ') {
+											firstName[k] = '\0';
+											break;
+										} else {
+											validName = 0;
+											break;
+										}
+									}
 								} else {
-									if(spaceCounter == 1 && firstName[k] == ' ') {
-										firstName[k] = '\0';
-										break;
+									if(dashCounter == 0) {
+										if(k != 0) {
+											dashCounter++;
+										} else {
+											validName = 0;
+											break;
+										}
 									} else {
 										validName = 0;
-										break;
+										break;												
 									}
 								}
-							} else {
-								if(dashCounter == 0) {
-									if(k != 0) {
-										dashCounter++;
+							}
+						}
+					} else {
+						validName = 0;
+					}
+					if(validName == 0) {
+						cout << "There was an error with reading the passenger's first name. Program will terminate.\n";
+						exit(1);
+					}
+				}
+				readPassengerStream.get(lastName, 21);
+				if(readPassengerStream.eof())
+					break;
+				else if(readPassengerStream.fail()) {
+					cout << "Something went wrong while reading the passenger last name. Program will terminate.\n";
+					exit(1);
+					
+				} else {
+					if(static_cast<int>(strlen(lastName)) > 0) {
+						int k;
+						dashCounter = 0;
+						spaceCounter = 0;
+						validName = 1;
+						for(k = 0; k < static_cast<int>(strlen(lastName)); k++) {
+							if(!(isalpha(lastName[k]))) {
+								if(!(lastName[k] == '-')) {
+									if(k > 0 && spaceCounter == 0 && lastName[k] == ' ') {
+										spaceCounter++;
 									} else {
-										validName = 0;
-										break;
+										if(spaceCounter == 1 && lastName[k] == ' ') {
+											lastName[k] = '\0';
+											break;
+										} else {
+											validName = 0;
+											break;
+										}
 									}
 								} else {
-									validName = 0;
-									break;												
+									if(dashCounter == 0) {
+										if(k != 0) {
+											dashCounter++;
+										} else {
+											validName = 0;
+											break;
+										}
+									} else {
+										validName = 0;
+										break;												
+									}
+								}
+							}
+						}
+					} else {
+						validName = 0;
+					}
+					if(validName == 0) {
+						cout << "there was an error with reading the passenger's last name. Program will terminate.\n";
+						exit(1);
+					}
+				}
+				validPhoneNumber = 1;
+				readPassengerStream.get(phoneNumber, 21);
+				if(readPassengerStream.eof())
+					break;
+				else if(readPassengerStream.fail()) {
+					cout << "Something went wrong went reading the phone number of the passenger. Program will terminate.\n";
+					exit(1);
+				} else {
+					phoneNumber[12] = '\0';
+					if(!(static_cast<int>(strlen(phoneNumber)) == 12)) {
+						validPhoneNumber = 0;
+					} else {
+						for(int z = 0; z < static_cast<int>(strlen(phoneNumber)); z++) {
+							if(z < 3 || (z > 3 && z < 7) || (z > 7 && z <= 11)) {
+								if(!isdigit(phoneNumber[z])) {
+									validPhoneNumber = 0;
+									break;
+								}
+							} else {
+								if(phoneNumber[z] != '-') {
+									validPhoneNumber = 0;
+									break;
 								}
 							}
 						}
 					}
-				} else {
-					validName = 0;
-				}
-				if(validName == 0) {
-					cout << "There was an error with reading the passenger's first name. Program will terminate.\n";
-					exit(1);
-				}
-			}
-			inputStream.get(lastName, 21);
-			if(inputStream.eof())
-				break;
-			else if(inputStream.fail()) {
-				cout << "Something went wrong while reading the passenger last name. Program will terminate.\n";
-				exit(1);
-				
-			} else {
-				if(static_cast<int>(strlen(lastName)) > 0) {
-					int k;
-					dashCounter = 0;
-					spaceCounter = 0;
-					validName = 1;
-					for(k = 0; k < static_cast<int>(strlen(lastName)); k++) {
-						if(!(isalpha(lastName[k]))) {
-							if(!(lastName[k] == '-')) {
-								if(k > 0 && spaceCounter == 0 && lastName[k] == ' ') {
-									spaceCounter++;
-								} else {
-									if(spaceCounter == 1 && lastName[k] == ' ') {
-										lastName[k] = '\0';
-										break;
-									} else {
-										validName = 0;
-										break;
-									}
-								}
-							} else {
-								if(dashCounter == 0) {
-									if(k != 0) {
-										dashCounter++;
-									} else {
-										validName = 0;
-										break;
-									}
-								} else {
-									validName = 0;
-									break;												
-								}
-							}
-						}
+					if(validPhoneNumber == 0) {
+						cout << "There was an error while reading the phone number of the passenger. Program will terminate.\n";
+						exit(1);
 					}
-				} else {
-					validName = 0;
 				}
-				if(validName == 0) {
-					cout << "there was an error with reading the passenger's last name. Program will terminate.\n";
+				readPassengerStream.get(seatCharacters, 5);
+				if(readPassengerStream.eof())
+					break;
+				else if(readPassengerStream.fail()) {
+					cout << "There was an error while reading the row and seat.Program will be terminated.\n";
 					exit(1);
-				}
-			}
-			validPhoneNumber = 1;
-			inputStream.get(phoneNumber, 21);
-			if(inputStream.eof())
-				break;
-			else if(inputStream.fail()) {
-				cout << "Something went wrong went reading the phone number of the passenger. Program will terminate.\n";
-				exit(1);
-			} else {
-				phoneNumber[12] = '\0';
-				if(!(static_cast<int>(strlen(phoneNumber)) == 12)) {
-					validPhoneNumber = 0;
 				} else {
-					for(int z = 0; z < static_cast<int>(strlen(phoneNumber)); z++) {
-						if(z < 3 || (z > 3 && z < 7) || (z > 7 && z <= 11)) {
-							if(!isdigit(phoneNumber[z])) {
-								validPhoneNumber = 0;
-								break;
-							}
+					p = seatCharacters;
+					while(*p != '\0') {
+						if(*p == ' ') {
+							*p = '\0';
+							break;
+						}
+						p++;
+					}
+					passengerRow = 0;
+					for(int i = 0; i < static_cast<int>(strlen(seatCharacters)); i++) {
+						if(isdigit(seatCharacters[i])) {
+							passengerRow = passengerRow*10 + static_cast<int>(seatCharacters[i]) - 48;
 						} else {
-							if(phoneNumber[z] != '-') {
-								validPhoneNumber = 0;
-								break;
-							}
+							passengerSeat = seatCharacters[i];
 						}
 					}
 				}
-				if(validPhoneNumber == 0) {
-					cout << "There was an error while reading the phone number of the passenger. Program will terminate.\n";
+				readPassengerStream >> passengerID;
+				if(readPassengerStream.eof())
+					break;
+				else if(readPassengerStream.fail()) {
+					cout << "There was an error reading the passenger ID. Program will be terminated.\n";
 					exit(1);
+				} else {
+					if(!(passengerID > 9999 && passengerID <= 99999)) {
+						cout << "passengerID needs to be a 5 digit number. Program will be terminated.\n";
+						exit(1);
+					}
 				}
-			}
-			inputStream.get(seatCharacters, 5);
-			if(inputStream.eof())
-				break;
-			else if(inputStream.fail()) {
-				cout << "There was an error while reading the row and seat.Program will be terminated.\n";
-				exit(1);
-			} else {
-				p = seatCharacters;
-				while(*p != '\0') {
-					if(*p == ' ') {
-						*p = '\0';
+				for(int i = 0; i < static_cast<int>(airlines.size()); i++) {
+					if(airlines[i].getID() == airlineID) {
+						for(int j = 0; j < static_cast<int>(airlines[i].getFlights().size()); j++) {
+							if(flightID == airlines[i].getFlights()[j].getID()) {
+									createdPassenger.setID(passengerID);
+									createdPassenger.setFirstName(firstName);
+									createdPassenger.setLastName(lastName);
+									createdPassenger.setPhoneNumber(phoneNumber);
+									createdPassenger.setSeat(passengerRow, passengerSeat);
+									airlines[i].getFlights()[j].addPassenger(createdPassenger);
+									readPassengerStream.ignore();
+								break;
+							}
+						}
 						break;
 					}
-					p++;
-				}
-				passengerRow = 0;
-				for(int i = 0; i < static_cast<int>(strlen(seatCharacters)); i++) {
-					if(isdigit(seatCharacters[i])) {
-						passengerRow = passengerRow*10 + static_cast<int>(seatCharacters[i]) - 48;
-					} else {
-						passengerSeat = seatCharacters[i];
-					}
 				}
 			}
-			inputStream >> passengerID;
-			if(inputStream.eof())
-				break;
-			else if(inputStream.fail()) {
-				cout << "There was an error reading the passenger ID. Program will be terminated.\n";
-				exit(1);
-			} else {
-				if(!(passengerID > 9999 && passengerID <= 99999)) {
-					cout << "passengerID needs to be a 5 digit number. Program will be terminated.\n";
-					exit(1);
-				}
-			}
-
-			createdPassenger.setID(passengerID);
-			createdPassenger.setFirstName(firstName);
-			createdPassenger.setLastName(lastName);
-			createdPassenger.setPhoneNumber(phoneNumber);
-			createdPassenger.setSeat(passengerRow, passengerSeat);
-			f.addPassenger(createdPassenger);
+			break;
 		}
-		break;
+		readPassengerStream.close();
 	}
-	inputStream.close();
-	return f;
 }
