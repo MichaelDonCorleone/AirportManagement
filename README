@@ -1,25 +1,26 @@
-You can compare and see what has changed by look at the files in "Final Term Project zip" 
+You can compare and see what has changed by looking at the files in "Term Project zip" 
 and the source files that are now in the repository. There is also a pdf file that is included
 that outlines exactly what was initially asked by the instructor.
 
 In order to fully access the functionality of the Airport Management Program
-Use the following credentials :
+use the following credentials :
 Username : JohnDoerw
 Password : thunderstar1993
-Just download the exectuable a.exe and the user_info.txt, flights_info.txt, airline_info.txt, passengers_info.txt
-to run the program.
+Download the exectuable a.exe, user_info.txt, flights_info.txt, airline_info.txt, passengers_info.txt.
+Place the files in the same folder and run the program.
 
-Functionalities/Documentation still being added. 
+Functionalities and Documentation are still being added. 
 This is a work in progress.
 Future additions :
 - GUI
-- Access to Database servers to save data
+- Access to Database servers to save data.
 - Creation of users.
 
 Recent functionality addition :
 - Creation of flights 13/07/2020
-- Creation airlines 14/07/2020
+- Creation of airlines 14/07/2020
 - Save airlines in file 14/07/2020
 - Load airlines from file on startup 14/07/2020
 - Save airlines, flights and passengers on seperate files 15/07/2020
-- Load airlines, flight and passengers from seperate files 15/07/2020
+- Load airlines, flights and passengers from seperate files 15/07/2020
+
