@@ -11,10 +11,11 @@ Future additions :
 - GUI
 - Access to Database servers to save data
 - Creation of users.
-- Save of all data in file.
 
 Recent functionality addition :
 - Creation of flights 13/07/2020
 - Creation airlines 14/07/2020
 - Save airlines in file 14/07/2020
 - Load airlines from file on startup 14/07/2020
+- Save airlines, flights and passengers on seperate files 15/07/2020
+- Load airlines, flight and passengers from seperate files 15/07/2020
