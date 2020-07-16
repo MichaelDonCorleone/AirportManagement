@@ -39,17 +39,19 @@ int airlineMenu();
 
 int modifyFlightMenu();
 
+void modifyFlight(Flight & flight);
+
 void selectAirline(vector <Airline> & airlines);
 
+void modifyAirline(Airline & airline);
+
 void deleteAirline(vector <Airline> & airlines);
+
+void displayAirlines(vector <Airline> & airlines);
 
 void loginOption(User & operatingUser, vector<User> & userDatabase);
 
 void displayUsers(vector <User> & userDatabase);
-
-void displayAirlines(vector <Airline> & airlines);
-
-void modifyAirline(Airline & airline);
 
 void saveUsers(vector <User> & userDatabase);
 
@@ -61,21 +63,37 @@ void selectFlight(Airline & airline);
 
 void createFlight(Airline & airline);
 
-void modifyFlight(Flight & flight);
+int readAirlineID(vector <Airline> & airlines);
+
+int readAirlineName(char * airlineName, int n);
+
+int readFlightID(vector <Flight> & flights);
+
+int readFlightName(char * flightName, int n);
 
 int readRows();
 
 int readSeats();
 
-int readFlightID(vector <Flight> & flights);
+int readPassengerID(Flight &source);
+/*
+	REQUIRES : -----
+	PROMISES : Returns a valid ID.
+*/
+
+int readPassengerFirstName(char * firstName, int n);
+
+int readPassengerLastName(char *lastName, int n);
+
+int readPassengerPhoneNumber(char *phoneNumber, int n);
+
+int readPassengerRow(int * row, Flight & source);
+
+int readPassengerSeat(int * row, char *seat, Flight & source);
 
 void createAirline(vector <Airline> & airlines);
 
-int readAirlineID(vector <Airline> & airlines);
-
-int readAirlineName(char * airlineName, int n);
-
-void saveAirlines(vector <Airline> & airlines);
+void saveAirlineData(vector <Airline> & airlines);
 
 void readAirlinesFromFile(vector <Airline> & airlines, string filename);
 
@@ -145,21 +163,5 @@ void saveInformation(Flight &source);
 	           Information. Then attempts to save the program's data in the 
 			   required format by the final projects pdf. 
 */
-
-int readPassengerID(Flight &source);
-/*
-	REQUIRES : -----
-	PROMISES : Returns a valid ID.
-*/
-
-int readPassengerFirstName(char * firstName, int n);
-
-int readPassengerLastName(char *lastName, int n);
-
-int readPassengerPhoneNumber(char *phoneNumber, int n);
-
-int readPassengerRow(int * row, Flight & source);
-
-int readPassengerSeat(int * row, char *seat, Flight & source);
 
 #endif
