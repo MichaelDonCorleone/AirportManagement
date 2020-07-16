@@ -17,6 +17,8 @@ Future additions :
 - Access to Database servers to save data.
 - Creation of users.
 - Proper documentation of all functions in main.h
+- Tidy up output/input streams, clean up references, pointers.
+- Improve efficiency of certain functions.
 
 Recent functionality addition :
 - Creation of flights 13/07/2020
