@@ -12,9 +12,11 @@ Place the files in the same folder and run the program.
 Functionalities and Documentation are still being added. 
 This is a work in progress.
 Future additions :
+
 - GUI
 - Access to Database servers to save data.
 - Creation of users.
+- Proper documentation of all functions in main.h
 
 Recent functionality addition :
 - Creation of flights 13/07/2020
@@ -23,4 +25,4 @@ Recent functionality addition :
 - Load airlines from file on startup 14/07/2020
 - Save airlines, flights and passengers on seperate files 15/07/2020
 - Load airlines, flights and passengers from seperate files 15/07/2020
-
+- Cleaned up main.cpp code, seperated functions by category 15/07/2020
